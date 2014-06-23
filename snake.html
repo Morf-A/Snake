@@ -12,15 +12,39 @@
 		width: 12px;
 		height: 15px;
 	}
-		
-	</style>
-	<script>
-	var sizeX = 40,
-		sizeY = 25,
-		direction = 39, 
-		x=9, y=10,
-		target = null;
-	
+
+    </style>
+    <script>
+    
+    var sizeX     = 40,
+        sizeY     = 25,
+        //direction = [39], 
+        x         = 9,
+        y         = 10,
+        target    = null;
+
+    
+    direction  = {
+        queue: [],
+        getValue: function(){
+            if(this.queue.length === 1){
+                return this.queue[0];
+            }else{
+                return this.queue.pop();
+            }
+        },
+        
+        setValue: function(value){
+            this.queue.unshift(value);
+        },
+        
+        showLastValue: function(){
+            return this.queue[0];
+        }
+    }
+    
+    direction.setValue(39);
+    
 	var snake=[[6,10], [7,10], [8,10], [9,10]];
 	
 
@@ -58,7 +82,7 @@
 	}
 	
 	function setTargetSell(x,y){
-		$($('td')[sizeX*y+x]).append('<img src=target.png>');
+        $($('td')[sizeX*y+x]).append('<img src=target.png>');
 	}
 	
 	function unsetCell(x,y){
@@ -71,8 +95,8 @@
 		
 		$('body').keydown(function( event ) {
 			
-			if([37,38,39,40].indexOf(event.which)!==-1 &&Math.abs(event.which - direction)!==2){
-				direction = event.which;
+			if([37,38,39,40].indexOf(event.which)!==-1 && Math.abs(event.which - direction.showLastValue())!==2){
+                direction.setValue(event.which);
 			return false;
 			}
 			console.log(event.which);
@@ -83,14 +107,14 @@
 		}
 		
 		var intervalID = setInterval( function(){
-		
-			if(direction == 39){
+            tempDir = direction.getValue();
+			if(tempDir == 39){
 				x++;
-			} else if(direction == 37) {
+			} else if(tempDir == 37) {
 				x--;
-			} else if(direction == 38) {
+			} else if(tempDir == 38) {
 				y--;
-			} else if(direction == 40) {
+			} else if(tempDir == 40) {
 				y++;
 			}
 			
@@ -114,10 +138,10 @@
 					target = null;
 					snake.push(last);
 					unsetCell(x,y);
-				}
-				
-				snake.push([x,y]);
-				setCell(x,y);
+                }
+                
+                snake.push([x,y]);
+                setCell(x,y);
 				
 			} else {
 				clearInterval(intervalID);
