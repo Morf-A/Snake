@@ -1,0 +1,140 @@
+<html>
+<head>
+	<title>Snake</title>
+	<script src="jquery-2.1.1.min.js"></script>
+		
+	<style>
+	table {
+		border: 5px dashed #1a3200; 
+		background-color: #91be01;
+	}
+	td {
+		width: 12px;
+		height: 12px;
+	}
+		
+	</style>
+	<script>
+	var sizeX = 40,
+		sizeY = 30,
+		direction = 39, 
+		x=9, y=10,
+		target = null;
+	
+	var snake=[[6,10], [7,10], [8,10], [9,10]];
+	
+
+	function getRandomInt(min, max){
+		 return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+		
+	function setRandomTarget(){
+		do{
+			rndX = getRandomInt(0, sizeX-1);
+			rndY = getRandomInt(0, sizeY-1);
+			
+		}while(!checkBite(rndX, rndY))
+		
+		setTargetSell(rndX, rndY);
+		target = [rndX, rndY];
+	}	
+	
+	function checkTarget(x, y) {
+		return (x === target[0] && y === target[1]);
+	}
+	
+		
+	function checkBite(x,y){
+		for(i = 0; i < snake.length; i++) {
+			if(snake[i][0] == x && snake[i][1] == y) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	function setCell(x,y){
+		$($('td')[sizeX*y+x]).append('<img src=element.png>');
+	}
+	
+	function setTargetSell(x,y){
+		$($('td')[sizeX*y+x]).append('<div>T</div>');
+	}
+	
+	function unsetCell(x,y){
+		$($('td')[sizeX*y+x]).children().remove()
+	}
+	
+	$(function() {
+		for(i=0; i<sizeY; i++){$('table').append($('<tr></tr>'));}
+		for(i=0; i<sizeX; i++){$('tr').append($('<td></td>'));}
+		
+		$('body').keydown(function( event ) {
+			
+			if([37,38,39,40].indexOf(event.which)!==-1 &&Math.abs(event.which - direction)!==2){
+				direction = event.which;
+			return false;
+			}
+			console.log(event.which);
+		});
+		
+		for(i=0; i<snake.length; i++){
+			setCell(snake[i][0],snake[i][1]);
+		}
+		
+		var intervalID = setInterval( function(){
+		
+			if(direction == 39){
+				x++;
+			} else if(direction == 37) {
+				x--;
+			} else if(direction == 38) {
+				y--;
+			} else if(direction == 40) {
+				y++;
+			}
+			
+			
+			if(
+				x !=sizeX &&
+				y != sizeY &&
+				x != -1 &&
+				y != -1 &&
+				checkBite(x, y)
+			){
+				if(target === null) {
+					setRandomTarget();
+				}
+				
+				snake.push([x,y]);
+				setCell(x,y);
+				var last = snake.shift();
+				unsetCell(last[0],last[1]);
+				
+				if (checkTarget(x, y)){
+					target = null;
+					snake.push(last);
+				}
+				
+			} else {
+				clearInterval(intervalID);
+				console.log('stop!');
+			}
+			console.log(x,y);
+		}, 300);
+		
+	});
+	
+		
+	
+
+
+		
+	</script>
+	
+</head>
+<body>
+	<table border =1>
+	</table>
+</body>
+</html>
