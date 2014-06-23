@@ -10,13 +10,13 @@
 	}
 	td {
 		width: 12px;
-		height: 12px;
+		height: 15px;
 	}
 		
 	</style>
 	<script>
 	var sizeX = 40,
-		sizeY = 30,
+		sizeY = 25,
 		direction = 39, 
 		x=9, y=10,
 		target = null;
@@ -58,7 +58,7 @@
 	}
 	
 	function setTargetSell(x,y){
-		$($('td')[sizeX*y+x]).append('<div>T</div>');
+		$($('td')[sizeX*y+x]).append('<img src=target.png>');
 	}
 	
 	function unsetCell(x,y){
@@ -106,35 +106,33 @@
 					setRandomTarget();
 				}
 				
-				snake.push([x,y]);
-				setCell(x,y);
+
 				var last = snake.shift();
 				unsetCell(last[0],last[1]);
 				
 				if (checkTarget(x, y)){
 					target = null;
 					snake.push(last);
+					unsetCell(x,y);
 				}
+				
+				snake.push([x,y]);
+				setCell(x,y);
 				
 			} else {
 				clearInterval(intervalID);
 				console.log('stop!');
 			}
 			console.log(x,y);
-		}, 300);
+		}, 200);
 		
 	});
-	
-		
-	
-
-
 		
 	</script>
 	
 </head>
 <body>
-	<table border =1>
+	<table>
 	</table>
 </body>
 </html>
